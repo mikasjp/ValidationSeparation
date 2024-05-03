@@ -12,10 +12,10 @@ namespace ValidationSeparation.Commands
 
     public class ExampleCommandHandler : IRequestHandler<ExampleCommand>
     {
-        public Task<Unit> Handle(ExampleCommand request, CancellationToken cancellationToken)
+        public Task Handle(ExampleCommand request, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Hello {request.ExampleValue}");
-            return Unit.Task;
+            return Task.CompletedTask;
         }
     }
 }

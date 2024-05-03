@@ -16,8 +16,8 @@ namespace ValidationSeparation.Behaviors
 
         public Task<TResponse> Handle(
             TRequest request,
-            CancellationToken cancellationToken,
-            RequestHandlerDelegate<TResponse> next)
+            RequestHandlerDelegate<TResponse> next,
+            CancellationToken cancellationToken)
         {
             _validator.ValidateAndThrow(request);
             return next();

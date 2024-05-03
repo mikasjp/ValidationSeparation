@@ -26,7 +26,10 @@ namespace ValidationSeparation
         internal static ServiceProvider BuildContainer()
         {
             var container = new ServiceCollection()
-                .AddMediatR(typeof(Program).Assembly)
+                .AddMediatR(c =>
+                {
+                    c.RegisterServicesFromAssemblyContaining<Program>();
+                })
                 .Scan(scan => scan
                     .FromAssemblyOf<Program>()
                     .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)))
