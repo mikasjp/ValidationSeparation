@@ -26,7 +26,7 @@ public class Tests
         await action.Should()
             .NotThrowAsync<ValidationException>();
     }
-    
+
     [Fact]
     public async Task Validator_ShouldThrow_WhenInvalidCommand()
     {

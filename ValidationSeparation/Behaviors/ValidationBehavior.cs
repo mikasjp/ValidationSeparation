@@ -3,24 +3,23 @@ using FluentValidation;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ValidationSeparation.Behaviors
+namespace ValidationSeparation.Behaviors;
+
+public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
-    public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    private readonly IValidator<TRequest> _validator;
+
+    public ValidationBehavior(IValidator<TRequest> validator)
     {
-        private readonly IValidator<TRequest> _validator;
+        _validator = validator;
+    }
 
-        public ValidationBehavior(IValidator<TRequest> validator)
-        {
-            _validator = validator;
-        }
-
-        public Task<TResponse> Handle(
-            TRequest request,
-            RequestHandlerDelegate<TResponse> next,
-            CancellationToken cancellationToken)
-        {
-            _validator.ValidateAndThrow(request);
-            return next();
-        }
+    public Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
+    {
+        _validator.ValidateAndThrow(request);
+        return next();
     }
 }
