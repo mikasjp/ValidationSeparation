@@ -6,21 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ValidationSeparation
 {
-    class Program
+    internal class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] _)
         {
-            var container = new ServiceCollection()
-                .AddMediatR(typeof(Program).Assembly)
-                .Scan(scan => scan
-                    .FromAssemblyOf<Program>()
-                        .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)))
-                            .AsImplementedInterfaces()
-                            .WithScopedLifetime()
-                        .AddClasses(classes => classes.AssignableTo(typeof(IPipelineBehavior<,>)))
-                            .AsImplementedInterfaces()
-                            .WithScopedLifetime())
-                .BuildServiceProvider();
+            var container = BuildContainer();
 
             var mediator = container.GetRequiredService<IMediator>();
             
@@ -31,6 +21,22 @@ namespace ValidationSeparation
             };
             
             await mediator.Send(command);
+        }
+
+        internal static ServiceProvider BuildContainer()
+        {
+            var container = new ServiceCollection()
+                .AddMediatR(typeof(Program).Assembly)
+                .Scan(scan => scan
+                    .FromAssemblyOf<Program>()
+                    .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)))
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime()
+                    .AddClasses(classes => classes.AssignableTo(typeof(IPipelineBehavior<,>)))
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime())
+                .BuildServiceProvider();
+            return container;
         }
     }
 }
